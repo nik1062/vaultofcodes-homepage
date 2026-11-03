@@ -3,7 +3,8 @@
 > **Learn technology. Build with technology. Experience technology.**  
 > *Final Project 2 — Web Development Capstone Internship*  
 > **Built by:** Nikunj (@nikunj)  
-> **Deployment Target:** [vaultofcodes-homepage.vercel.app](https://vaultofcodes-homepage.vercel.app)
+> **Live Production Site:** [vaultofcodes-home.vercel.app](https://vaultofcodes-home.vercel.app)  
+**GitHub Repository:** [github.com/nik1062/vaultofcodes-homepage](https://github.com/nik1062/vaultofcodes-homepage)
 
 ---
 
