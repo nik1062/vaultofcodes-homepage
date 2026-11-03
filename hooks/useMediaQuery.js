@@ -1,24 +1,32 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useSyncExternalStore, useCallback } from "react";
 
 /**
  * Hook to evaluate responsive CSS media queries in JS
- * e.g., useMediaQuery("(max-width: 768px)")
+ * Uses useSyncExternalStore for concurrent-safe, zero-cascade rendering
  */
 export function useMediaQuery(query) {
-  const [matches, setMatches] = useState(false);
+  const subscribe = useCallback(
+    (callback) => {
+      if (typeof window === "undefined" || !window.matchMedia) {
+        return () => {};
+      }
+      const mediaQuery = window.matchMedia(query);
+      mediaQuery.addEventListener("change", callback);
+      return () => mediaQuery.removeEventListener("change", callback);
+    },
+    [query]
+  );
 
-  useEffect(() => {
-    if (typeof window === "undefined" || !window.matchMedia) return;
+  const getSnapshot = () => {
+    if (typeof window === "undefined" || !window.matchMedia) {
+      return false;
+    }
+    return window.matchMedia(query).matches;
+  };
 
-    const mediaQuery = window.matchMedia(query);
-    setMatches(mediaQuery.matches);
+  const getServerSnapshot = () => false;
 
-    const handler = (event) => setMatches(event.matches);
-    mediaQuery.addEventListener("change", handler);
-    return () => mediaQuery.removeEventListener("change", handler);
-  }, [query]);
-
-  return matches;
+  return useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
 }

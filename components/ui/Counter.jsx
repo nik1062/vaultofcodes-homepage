@@ -20,10 +20,7 @@ export function Counter({
   const shouldReduceMotion = useReducedMotion();
 
   useEffect(() => {
-    if (shouldReduceMotion) {
-      setCount(value);
-      return;
-    }
+    if (shouldReduceMotion) return;
 
     const observer = new IntersectionObserver(
       ([entry]) => {
@@ -56,16 +53,21 @@ export function Counter({
       { threshold: 0.2 }
     );
 
-    if (elementRef.current) {
-      observer.observe(elementRef.current);
+    const elem = elementRef.current;
+    if (elem) {
+      observer.observe(elem);
     }
 
     return () => {
+      if (elem) {
+        observer.unobserve(elem);
+      }
       observer.disconnect();
     };
   }, [value, duration, hasAnimated, shouldReduceMotion]);
 
-  const formattedCount = count >= 1000 ? count.toLocaleString() : count;
+  const activeValue = shouldReduceMotion ? value : count;
+  const formattedCount = activeValue >= 1000 ? activeValue.toLocaleString() : activeValue;
 
   return (
     <span ref={elementRef} className={className}>
